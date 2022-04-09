@@ -6,6 +6,8 @@
 #
 #!/usr/bin/env bash
 
+SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
+
 HERE=${PWD}
 DATA_DIR=${HERE}/data
 RAW_DATA_DIR=${DATA_DIR}/raw_data
@@ -44,7 +46,7 @@ do
 
     for split in "train" "dev" "train_dev" "test"
     do
-        python3 preprocessing/clean_conll_file.py \
+        python3 ${SCRIPT_DIR}/clean_conll_file.py \
         --filename "${TASK_DIR}/${split}.txt.conll" \
         --model_name_or_path ${MODEL}\
         --max_len ${MAXLEN} > "${PROCESSED_DATA_DIR}/${split}.txt"
@@ -79,7 +81,7 @@ do
 
     for split in "train" "dev" "test"
     do
-        python3 preprocessing/clean_conll_file.py\
+        python3 ${SCRIPT_DIR}/clean_conll_file.py\
                 --filename "${TASK_DIR}/${split}.txt.conll"\
                 --model_name_or_path ${MODEL}\
                 --max_len ${MAXLEN} > "${PROCESSED_DATA_DIR}/${split}.txt"
@@ -108,7 +110,7 @@ if test -d "${I2B2_DIR}/i2b2-2010/reference_standard_for_test_data"; then
     I2B2_2010_DIR=${I2B2_DIR}/i2b2-2010
 
 
-    python preprocessing/preprocess_i2b2_2010_ner.py \
+    python ${SCRIPT_DIR}/preprocess_i2b2_2010_ner.py \
     --beth_dir ${I2B2_2010_DIR}/concept_assertion_relation_training_data/beth/ \
     --partners_dir ${I2B2_2010_DIR}/concept_assertion_relation_training_data/partners/ \
     --test_dir ${I2B2_2010_DIR}/reference_standard_for_test_data/ \
@@ -121,7 +123,7 @@ if test -d "${I2B2_DIR}/i2b2-2010/reference_standard_for_test_data"; then
 
     for split in "train" "dev" "test"
     do
-       python3 preprocessing/clean_conll_file.py \
+       python3 ${SCRIPT_DIR}/clean_conll_file.py \
         --filename "${TASK_DIR}/${split}.txt.conll"\
         --model_name_or_path ${MODEL} \
         --max_len ${MAXLEN} > "${PROCESSED_DATA_DIR}/${split}.txt"
@@ -148,14 +150,14 @@ if test -d "${I2B2_DIR}/i2b2-2012/2012-07-15.original-annotation.release"; then
     I2B2_2012_DIR=${I2B2_DIR}/i2b2-2012
 
 
-    python preprocessing/preprocess_i2b2_2012_ner.py \
+    python ${SCRIPT_DIR}/preprocess_i2b2_2012_ner.py \
     --raw_data_dir ${I2B2_2012_DIR} \
     --task_dir ${TASK_DIR}
 
 
     for split in "train" "dev" "test"
     do
-       python3 preprocessing/clean_conll_file.py \
+       python3 ${SCRIPT_DIR}/clean_conll_file.py \
         --filename "${TASK_DIR}/${split}.txt.conll"\
         --model_name_or_path ${MODEL} \
         --max_len ${MAXLEN} > "${PROCESSED_DATA_DIR}/${split}.txt"
@@ -183,7 +185,7 @@ if test -d "${I2B2_DIR}/i2b2-2014/testing-PHI-Gold-fixed/"; then
     mkdir -p ${PROCESSED_DATA_DIR}
     I2B2_2014_DIR=${I2B2_DIR}/i2b2-2014
 
-    python preprocessing/preprocess_i2b2_2014_ner.py \
+    python ${SCRIPT_DIR}/preprocess_i2b2_2014_ner.py \
         --gold_set_1_dir ${I2B2_2014_DIR}/training-PHI-Gold-Set1 \
         --gold_set_2_dir ${I2B2_2014_DIR}/training-PHI-Gold-Set2 \
         --test_gold_set_dir ${I2B2_2014_DIR}/testing-PHI-Gold-fixed \
@@ -192,7 +194,7 @@ if test -d "${I2B2_DIR}/i2b2-2014/testing-PHI-Gold-fixed/"; then
 
     for split in "train" "dev" "test"
     do
-       python3 preprocessing/clean_conll_file.py \
+       python3 ${SCRIPT_DIR}/clean_conll_file.py \
         --filename "${TASK_DIR}/${split}.txt.conll"\
         --model_name_or_path ${MODEL} \
         --max_len ${MAXLEN} > "${PROCESSED_DATA_DIR}/${split}.txt"
