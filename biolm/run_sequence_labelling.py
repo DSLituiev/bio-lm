@@ -70,7 +70,7 @@ def set_seed(args):
 def train(args, train_dataset, model, tokenizer, labels, pad_token_label_id):
     """ Train the model """
     if args.local_rank in [-1, 0]:
-        tb_writer = SummaryWriter()
+        tb_writer = SummaryWriter(log_dir=args.output_dir)
 
     args.train_batch_size = args.per_gpu_train_batch_size * max(1, args.n_gpu)
     train_sampler = RandomSampler(train_dataset) if args.local_rank == -1 else DistributedSampler(train_dataset)
@@ -395,6 +395,9 @@ def main():
         required=True,
         help="Path to pre-trained model or shortcut name selected in the list", # + ", ".join(ALL_MODELS),
     )
+
+    parser.add_argument("--save-base", action="store_true", help="Save the base model (flag)")
+
     parser.add_argument(
         "--output_dir",
         default=None,
@@ -589,6 +592,13 @@ def main():
         config=config,
         cache_dir=args.cache_dir if args.cache_dir else None,
     )
+
+    if args.save_base: 
+        hg_model_hub_name = args.model_name_or_path
+        tokenizer.save_pretrained(f"models/{hg_model_hub_name}")
+        model.save_pretrained(f"models/{hg_model_hub_name}")
+        logging.info(f"the base model and the tokenizer have been saved in models/{hg_model_hub_name}")
+
 
     if args.local_rank == 0:
         torch.distributed.barrier()  # Make sure only the first process in distributed training will download model & vocab
